@@ -593,6 +593,14 @@ qx.Class.define("dialog.Form",
         }
         
         /*
+         * tooltip
+         */
+        if ( fieldData.toolTipText !== undefined )
+        {
+          formElement.setToolTipText( fieldData.toolTipText );
+        }
+        
+        /*
          * events
          */
         if ( qx.lang.Type.isObject( fieldData.events ) )
