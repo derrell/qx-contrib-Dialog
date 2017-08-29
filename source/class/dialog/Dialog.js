@@ -246,10 +246,12 @@ qx.Class.define("dialog.Dialog",
     root.addListener("resize", function(e)
     {
       var bounds = this.getBounds();
-      this.set({
-        marginTop: Math.round( ( qx.bom.Document.getHeight() -bounds.height ) / 2),
-        marginLeft : Math.round( ( qx.bom.Document.getWidth() -bounds.width) / 2)
-      });
+      if (bounds) {
+        this.set({
+          marginTop: Math.round( ( qx.bom.Document.getHeight() -bounds.height ) / 2),
+          marginLeft : Math.round( ( qx.bom.Document.getWidth() -bounds.width) / 2)
+        });
+      }
     }, this);
     
     /* 
@@ -258,10 +260,12 @@ qx.Class.define("dialog.Dialog",
     this.addListener("appear", function(e)
     {
       var bounds = this.getBounds();
-      this.set({
-        marginTop: Math.round( ( qx.bom.Document.getHeight() -bounds.height ) / 2),
-        marginLeft : Math.round( ( qx.bom.Document.getWidth() -bounds.width) / 2)
-      });
+      if (bounds) {
+        this.set({
+          marginTop: Math.round( ( qx.bom.Document.getHeight() -bounds.height ) / 2),
+          marginLeft : Math.round( ( qx.bom.Document.getWidth() -bounds.width) / 2)
+        });
+      }
     }, this);   
     
     /*
