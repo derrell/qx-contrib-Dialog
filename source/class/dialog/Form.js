@@ -150,30 +150,46 @@ qx.Class.define("dialog.Form",
        * groupbox
        */
       var groupboxContainer = new qx.ui.groupbox.GroupBox().set({
-        contentPadding: [16, 16, 16, 16]
+        contentPadding  : [ 16, 16, 16, 16 ],
+        backgroundColor : "background-application"
       });
+      var decorator = new qx.ui.decoration.Decorator();
+      decorator.set({
+        shadowColor       : "dialog-shadow",
+        shadowLength      : 0,
+        shadowBlurRadius  : 30
+      });
+      this.setDecorator(decorator);
       groupboxContainer.setLayout( new qx.ui.layout.VBox(10) );
       this.add( groupboxContainer );
 
-      var hbox = new qx.ui.container.Composite;
-      hbox.setLayout( new qx.ui.layout.HBox(10) );
+      var hbox = new qx.ui.container.Composite;      
+      hbox.set({
+        layout          : new qx.ui.layout.HBox(10),
+        backgroundColor : "background-application"
+      })
       groupboxContainer.add( hbox );
       
       /*
        * Add message label
        */
       this._message = new qx.ui.basic.Label();
-      this._message.setBackgroundColor("black");
-      this._message.setRich(true);
-      this._message.setMinWidth(200);
-      this._message.setAllowStretchX(true);
+      this._message.set({
+        font            : "bold",
+        backgroundColor : "background-application",
+        rich            : true,
+        minWidth        : 200,
+        allowStretchX   : true
+      });      
       hbox.add( this._message, {flex:1} );    
       
       /* 
        * Form container  
        */
-      this._formContainer = new qx.ui.container.Composite;
-      this._formContainer.setBackgroundColor("black");
+      this._formContainer = new qx.ui.container.Composite;      
+      this._formContainer.set({
+        font : "bold"
+      });
       this._formContainer.setLayout( new qx.ui.layout.Grow() );
       groupboxContainer.add( this._formContainer, {flex: 1} );
       
@@ -181,16 +197,19 @@ qx.Class.define("dialog.Form",
        * buttons pane
        */
       var buttonPane = new qx.ui.container.Composite;
-      buttonPane.setBackgroundColor("black");
       var bpLayout = new qx.ui.layout.HBox(5)
       bpLayout.setAlignX("center");
-      buttonPane.setLayout( bpLayout );
+      buttonPane.set({
+        font            : "bold",
+        backgroundColor : "background-application",
+        layout          : bpLayout
+      });
       groupboxContainer.add(buttonPane);
       
       /* 
        * Ok Button 
        */
-      var okButton = this._createOkButton();
+      var okButton = this._createOkButton();      
       buttonPane.add( okButton );   
       
       /* 
@@ -638,6 +657,7 @@ qx.Class.define("dialog.Form",
       view.getLayout().setColumnMaxWidth(0, this.getLabelColumnWidth() ); 
       view.getLayout().setColumnFlex(1, 1);
       view.setAllowGrowX(true);
+      view.setBackgroundColor("background-application");
       this._formContainer.add( view );
       
       /*
@@ -651,16 +671,17 @@ qx.Class.define("dialog.Form",
     _createOkButton : function()
     {
       // unlike our superclass, we do not add an appear listener to focus OK
-      var okButton = this._okButton =  new qx.ui.form.Button(this.tr("OK"));
+      var okButton = this._okButton =  new qx.ui.form.Button(this.tr("OK"));      
       okButton.setIcon(
         dialog.Dialog._appearances.okButtonIcon ||
-          "icon/22/actions/dialog-ok.png")
+          "icon/22/actions/dialog-ok.png");
+      
       if (dialog.Dialog._appearances.okButtonAppearance)
       {
         okButton.setAppearance(
           dialog.Dialog._appearances.okButtonAppearance);
       }
-      okButton.setAllowStretchX(false);
+      okButton.setAllowStretchX(false);      
       okButton.addListener("execute", this._handleOk, this);  
       return okButton;
     },
