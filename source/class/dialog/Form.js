@@ -102,6 +102,18 @@ qx.Class.define("dialog.Form",
       check : "Integer",
       nullable : false,
       init : 100
+    },
+
+    /**
+     * Function to call to create and configure a form renderer. If null, a
+     * single-column form renderer is automatically instantiated and
+     * configured. The function is passed a single argument, the form object.
+     */
+    setupFormRendererFunction :
+    {
+      check : "Function",
+      nullable : true,
+      init : null
     }
   },
   
@@ -122,7 +134,7 @@ qx.Class.define("dialog.Form",
   */     
   members :
   {
-    
+
     /*
     ---------------------------------------------------------------------------
        PRIVATE MEMBERS
@@ -143,8 +155,15 @@ qx.Class.define("dialog.Form",
     /**
      * Create the main content of the widget
      */
-    _createWidgetContent : function()
+    _createWidgetContent : function(properties)
     {      
+      /*
+       * Handle properties that must be set before _applyFormData
+       */
+      if (properties.setupFormRendererFunction)
+      {
+        this.setSetupFormRendererFunction(properties.setupFormRendererFunction);
+      }
 
       /*
        * groupbox
@@ -404,7 +423,7 @@ qx.Class.define("dialog.Form",
           case "textfield":
           case "passwordfield":
           case "combobox":
-		  case "datefield":
+	  case "datefield":
             this._formController.addTarget( 
               formElement, "value", key, true, 
               null,
@@ -620,6 +639,26 @@ qx.Class.define("dialog.Form",
         }
         
         /*
+         * generic property setter
+         */
+        if ( typeof fieldData.properties == "object" )
+        {
+          formElement.set( fieldData.properties );
+        }
+
+        /*
+         * generic userdata settings
+         */
+        if ( typeof fieldData.userdata == "object" )
+        {
+          Object.keys( fieldData.userdata ).forEach(
+            function(key)
+            {
+              formElement.setUserData(key, fieldData.userdata[key]);
+            });
+        }
+
+        /*
          * events
          */
         if ( qx.lang.Type.isObject( fieldData.events ) )
@@ -628,7 +667,8 @@ qx.Class.define("dialog.Form",
           {  
             try
             {
-              var func = eval("("+fieldData.events[type]+")"); // eval is evil, I know.
+//              var func = eval("("+fieldData.events[type]+")"); // eval is evil, I know.
+              var func = fieldData.events[type];
               if ( ! qx.lang.Type.isFunction(func) )
               {
                 throw new Error();
@@ -652,13 +692,27 @@ qx.Class.define("dialog.Form",
       /*
        * render the form
        */
-      var view = new dialog.FormRenderer( this._form );
-      view.getLayout().setColumnFlex(0, 0);
-      view.getLayout().setColumnMaxWidth(0, this.getLabelColumnWidth() ); 
-      view.getLayout().setColumnFlex(1, 1);
-      view.setAllowGrowX(true);
-      view.setBackgroundColor("background-application");
-      this._formContainer.add( view );
+      var setupFormRenderer;
+
+      setupFormRenderer = this.getSetupFormRendererFunction();
+      if (! setupFormRenderer)
+      {
+        setupFormRenderer = function(form)
+        {
+          var view;
+
+          view = new dialog.FormRenderer( form );
+          view.getLayout().setColumnFlex(0, 0);
+          view.getLayout().setColumnMaxWidth(0, this.getLabelColumnWidth() ); 
+          view.getLayout().setColumnFlex(1, 1);
+          view.setAllowGrowX(true);
+          view.setBackgroundColor("background-application");
+
+          return view;
+        };
+      }
+
+      this._formContainer.add( setupFormRenderer.bind(this)(this._form) );
       
       /*
        * validate the form
@@ -671,7 +725,7 @@ qx.Class.define("dialog.Form",
     _createOkButton : function()
     {
       // unlike our superclass, we do not add an appear listener to focus OK
-      var okButton = this._okButton =  new qx.ui.form.Button(this.tr("OK"));      
+      var okButton = this._okButton =  new qx.ui.form.Button(this.tr("OK"));
       okButton.setIcon(
         dialog.Dialog._appearances.okButtonIcon ||
           "icon/22/actions/dialog-ok.png");

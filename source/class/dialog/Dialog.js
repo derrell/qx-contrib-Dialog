@@ -272,7 +272,7 @@ qx.Class.define("dialog.Dialog",
     /*
      * create widget content
      */
-    this._createWidgetContent();
+    this._createWidgetContent(properties);
     
     /*
      * set properties if given
@@ -281,6 +281,7 @@ qx.Class.define("dialog.Dialog",
     {
       this.set(properties);
     }
+
     /*
      * if argument is a string, assume it is a message
      */
