@@ -114,6 +114,32 @@ qx.Class.define("dialog.Form",
       check : "Function",
       nullable : true,
       init : null
+    },
+
+    /**
+     * Function to call just before creating the form's input fields. This
+     * allows additional, non-form widgets to be added. The function is called
+     * one one argument: the container in which the form fields should be
+     * placed.
+     */
+    beforeFormFunction :
+    {
+      check : "Function",
+      nullabel : true,
+      init : null
+    },
+
+    /**
+     * Function to call just after creating the form's input fields. This
+     * allows additional, non-form widgets to be added. The function is called
+     * one one argument: the container in which the form fields should be
+     * placed.
+     */
+    afterFormFunction :
+    {
+      check : "Function",
+      nullabel : true,
+      init : null
     }
   },
   
@@ -202,6 +228,14 @@ qx.Class.define("dialog.Form",
       });      
       hbox.add( this._message, {flex:1} );    
       
+      /*
+       * If requested, call the before-form function to add some fields
+       */
+      if (typeof properties.beforeFormFunction == "function")
+      {
+        properties.beforeFormFunction(groupboxContainer);
+      }
+
       /* 
        * Form container  
        */
@@ -212,6 +246,14 @@ qx.Class.define("dialog.Form",
       this._formContainer.setLayout( new qx.ui.layout.Grow() );
       groupboxContainer.add( this._formContainer, {flex: 1} );
       
+      /*
+       * If requested, call the after-form function to add some fields
+       */
+      if (typeof properties.afterFormFunction == "function")
+      {
+        properties.afterFormFunction(groupboxContainer);
+      }
+
       /*
        * buttons pane
        */
