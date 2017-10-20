@@ -231,9 +231,11 @@ qx.Class.define("dialog.Form",
       /*
        * If requested, call the before-form function to add some fields
        */
+      var f;
       if (typeof properties.beforeFormFunction == "function")
       {
-        properties.beforeFormFunction(groupboxContainer);
+        f = properties.beforeFormFunction.bind(properties.context);
+        f(groupboxContainer);
       }
 
       /* 
@@ -251,7 +253,8 @@ qx.Class.define("dialog.Form",
        */
       if (typeof properties.afterFormFunction == "function")
       {
-        properties.afterFormFunction(groupboxContainer);
+        f = properties.afterFormFunction.bind(properties.context);
+        f(groupboxContainer);
       }
 
       /*
