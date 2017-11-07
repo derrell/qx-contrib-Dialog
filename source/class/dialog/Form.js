@@ -214,6 +214,7 @@ qx.Class.define("dialog.Form",
         backgroundColor : "background-application"
       })
       groupboxContainer.add( hbox );
+      groupboxContainer.setUserData("messageHBox", hbox);
       
       /*
        * Add message label
